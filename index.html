@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript-Basics: Schritt für Schritt zum eigenen Programm</title>
+<style>
+  :root {
+    --bg: #0f1220;
+    --bg-card: #181c2f;
+    --bg-code: #0b0e1a;
+    --accent: #f7df1e;
+    --accent-bright: #ffe75e;
+    --accent-2: #4ec9b0;
+    --text: #e8eaf6;
+    --text-dim: #9aa0c3;
+    --success: #2ecc71;
+    --error: #e74c3c;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+  header {
+    background: linear-gradient(135deg, #232946 0%, #2b2150 60%, #1a1f3d 100%);
+    padding: 70px 0 60px;
+    text-align: center;
+    border-bottom: 3px solid var(--accent);
+  }
+  header .logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 72px; height: 72px; margin-bottom: 14px;
+    background: var(--accent); color: #1a1a1a;
+    font-size: 1.7rem; font-weight: 800; border-radius: 12px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    box-shadow: 0 4px 18px rgba(247,223,30,.25);
+  }
+  header h1 { font-size: 2.2rem; margin-bottom: 12px; }
+  header h1 span { color: var(--accent-bright); }
+  header p { color: var(--text-dim); font-size: 1.1rem; max-width: 640px; margin: 0 auto; }
+  .badge {
+    display: inline-block; margin-top: 22px; padding: 8px 18px;
+    background: rgba(247,223,30,.1); border: 1px solid var(--accent);
+    border-radius: 999px; color: var(--accent-bright); font-size: .9rem;
+  }
+
+  main { padding: 50px 0 30px; }
+  .intro-text { text-align: center; color: var(--text-dim); max-width: 680px; margin: 0 auto 40px; }
+  .intro-text strong { color: var(--text); }
+  .intro-text code { background: var(--bg-code); padding: 1px 7px; border-radius: 5px; color: var(--accent-bright); }
+
+  .topic {
+    background: var(--bg-card);
+    border: 1px solid #262b4a;
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .topic-btn {
+    width: 100%; display: flex; align-items: center; gap: 16px;
+    background: none; border: none; cursor: pointer;
+    padding: 20px 24px; text-align: left; color: var(--text);
+    font-size: 1.15rem; font-weight: 600; font-family: inherit;
+    transition: background .2s;
+  }
+  .topic-btn:hover { background: rgba(247,223,30,.06); }
+  .topic-num {
+    flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent); color: #1a1a1a; font-size: 1rem; font-weight: 700;
+  }
+  .topic-btn .arrow { margin-left: auto; transition: transform .3s; color: var(--text-dim); }
+  .topic.open .topic-btn .arrow { transform: rotate(180deg); }
+  .topic-body { display: none; padding: 0 28px 26px; }
+  .topic.open .topic-body { display: block; animation: fadeIn .35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .topic-body p { margin-bottom: 14px; color: var(--text); }
+  .topic-body ul { margin: 0 0 16px 22px; }
+  .topic-body li { margin-bottom: 6px; }
+  .topic-body h3 { color: var(--accent-bright); margin: 20px 0 10px; font-size: 1.05rem; }
+  .topic-body code { background: var(--bg-code); padding: 1px 7px; border-radius: 5px; color: var(--accent-bright); }
+
+  .code-window { border-radius: 10px; overflow: hidden; margin: 16px 0 20px; border: 1px solid #262b4a; }
+  .code-title {
+    background: #1d2340; padding: 8px 14px; font-size: .8rem;
+    color: var(--text-dim); display: flex; align-items: center; gap: 8px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+  }
+  .code-title .dots { display: flex; gap: 5px; }
+  .code-title .dots i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+  .code-title .dots i:nth-child(1) { background: #e74c3c; }
+  .code-title .dots i:nth-child(2) { background: #f7df1e; }
+  .code-title .dots i:nth-child(3) { background: #2ecc71; }
+  .code-title.terminal { color: var(--accent-2); }
+  pre {
+    background: var(--bg-code); padding: 16px 18px; overflow-x: auto;
+    font-family: 'Fira Code', 'Consolas', monospace; font-size: .88rem; line-height: 1.65;
+  }
+  .kw { color: #c792ea; }
+  .str { color: #a5e075; }
+  .var { color: #82aaff; }
+  .fn { color: #ffcb6b; }
+  .num { color: #f78c6c; }
+  .cmt { color: #5c6480; font-style: italic; }
+  .out { color: #89ddff; }
+
+  .merke {
+    background: rgba(247,223,30,.07); border-left: 4px solid var(--accent);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 18px 0;
+    font-size: .95rem;
+  }
+  .merke b { color: var(--accent-bright); }
+  .achtung {
+    background: rgba(231,76,60,.08); border-left: 4px solid var(--error);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 18px 0;
+    font-size: .95rem;
+  }
+  .achtung b { color: var(--error); }
+  .aufgabe {
+    background: rgba(46,204,113,.08); border: 1px dashed var(--success);
+    padding: 14px 16px; border-radius: 10px; margin: 18px 0;
+    font-size: .95rem;
+  }
+  .aufgabe b { color: var(--success); }
+
+  .solution-btn {
+    background: none; border: 1px dashed var(--accent); color: var(--accent-bright);
+    padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: .88rem;
+    font-family: inherit; margin: 6px 0 10px; transition: background .2s;
+  }
+  .solution-btn:hover { background: rgba(247,223,30,.12); }
+  .solution { display: none; }
+  .solution.open { display: block; }
+
+  .section-title { text-align: center; font-size: 1.6rem; margin: 60px 0 8px; }
+  .section-sub { text-align: center; color: var(--text-dim); margin-bottom: 30px; }
+  .cheat-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: var(--radius); overflow: hidden; }
+  .cheat-table th {
+    background: #232946; padding: 14px 18px; text-align: left;
+    color: var(--accent-bright); font-size: .95rem;
+  }
+  .cheat-table td { padding: 13px 18px; border-top: 1px solid #262b4a; font-size: .93rem; }
+  .cheat-table tr:hover td { background: rgba(247,223,30,.04); }
+  .cheat-table code {
+    font-family: 'Fira Code', 'Consolas', monospace; color: var(--accent-bright);
+    background: var(--bg-code); padding: 2px 8px; border-radius: 5px; white-space: nowrap;
+  }
+
+  .quiz-card {
+    background: var(--bg-card); border: 1px solid #262b4a;
+    border-radius: var(--radius); padding: 30px; margin-top: 20px;
+  }
+  .quiz-progress { height: 8px; background: #262b4a; border-radius: 999px; overflow: hidden; margin-bottom: 8px; }
+  .quiz-progress .bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); width: 0%; transition: width .4s; }
+  .quiz-meta { display: flex; justify-content: space-between; font-size: .85rem; color: var(--text-dim); margin-bottom: 22px; }
+  .quiz-question { font-size: 1.15rem; font-weight: 600; margin-bottom: 20px; }
+  .quiz-code { margin-bottom: 20px; }
+  .answer {
+    display: block; width: 100%; text-align: left; margin-bottom: 10px;
+    padding: 14px 18px; border-radius: 10px; cursor: pointer;
+    background: #1d2240; border: 2px solid #2b3157; color: var(--text);
+    font-size: .98rem; font-family: inherit; transition: all .2s;
+  }
+  .answer:hover { border-color: var(--accent); background: rgba(247,223,30,.08); transform: translateX(4px); }
+  .answer.correct { border-color: var(--success); background: rgba(46,204,113,.12); }
+  .answer.wrong { border-color: var(--error); background: rgba(231,76,60,.12); }
+  .answer:disabled { cursor: default; }
+  .quiz-feedback { display: none; margin-top: 16px; padding: 14px 16px; border-radius: 10px; font-size: .95rem; }
+  .quiz-feedback.ok { display: block; background: rgba(46,204,113,.12); border: 1px solid var(--success); }
+  .quiz-feedback.nope { display: block; background: rgba(231,76,60,.12); border: 1px solid var(--error); }
+  .quiz-next {
+    display: none; margin-top: 18px; padding: 12px 28px; border: none; border-radius: 999px;
+    background: var(--accent); color: #1a1a1a; font-size: 1rem; cursor: pointer; font-family: inherit;
+    font-weight: 700; transition: background .2s;
+  }
+  .quiz-next:hover { background: var(--accent-bright); }
+  .quiz-result { display: none; text-align: center; padding: 20px 0; }
+  .quiz-result .emoji { font-size: 3rem; margin-bottom: 10px; }
+  .quiz-result h3 { font-size: 1.5rem; margin-bottom: 8px; }
+  .quiz-result .score { font-size: 2rem; font-weight: 700; color: var(--accent-bright); margin: 12px 0; }
+  .quiz-result p { color: var(--text-dim); margin-bottom: 22px; }
+  .quiz-restart {
+    padding: 12px 28px; border: 2px solid var(--accent); background: none; border-radius: 999px;
+    color: var(--accent-bright); font-size: 1rem; cursor: pointer; font-family: inherit;
+  }
+  .quiz-restart:hover { background: rgba(247,223,30,.12); }
+
+  footer {
+    margin-top: 70px; padding: 26px 0; text-align: center;
+    color: var(--text-dim); font-size: .85rem; border-top: 1px solid #262b4a;
+  }
+  footer code { color: var(--accent-bright); }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.6rem; }
+    .topic-btn { font-size: 1rem; padding: 16px 16px; }
+    .topic-body { padding: 0 16px 22px; }
+    .quiz-card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="logo">JS</div>
+    <h1>Hallo <span>JavaScript-Entwickler:in</span>! 👋</h1>
+    <p>Hier lernst du Schritt für Schritt, wie du mit JavaScript eigene Programme schreibst –
+       geschrieben in VS Code, gestartet mit Code Runner. Klicke auf ein Thema, um loszulegen!</p>
+    <span class="badge">💻 VS Code + Code Runner &nbsp;•&nbsp; Unterrichtsdateien 01–10</span>
+  </div>
+</header>
+
+<main class="container">
+
+  <p class="intro-text">
+    JavaScript läuft überall: im <strong>Browser</strong> und – wie bei uns im Unterricht – direkt
+    auf deinem PC über <strong>Node.js</strong>. Du schreibst den Code in <strong>VS Code</strong>
+    in Dateien wie <code>01_hello.js</code> und startest ihn mit der Erweiterung
+    <strong>Code Runner</strong> (▶-Button oben rechts oder Rechtsklick → „Run Code“).
+    Die Themen hier folgen genau unseren Unterrichtsdateien
+    <code>01_hello.js</code> bis <code>10_while-mit-frage.js</code> – schau sie dir parallel an!
+  </p>
+
+  <!-- ============ THEMA 1: 01_hello.js ============ -->
+  <section class="topic" id="thema1">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">01</span>
+      Erste Ausgabe: console.log &amp; Kommentare
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Dein erstes Programm! Mit <code>console.log()</code> schreibst du Text in das Terminal –
+         dein wichtigstes Werkzeug für Ausgaben.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 01_hello.js</div>
+<pre><span class="cmt">// ich bin ein Kommentar (einzeilig)</span>
+
+<span class="cmt">/*
+ich bin auch
+ein Kommentar (aber mehrzeilig)
+muss wieder geschlossen werden
+*/</span>
+
+<span class="cmt">// Ausgabe in JS </span>
+<span class="fn">console.log</span>(<span class="str">"Hello World!"</span>)
+<span class="fn">console.log</span>(<span class="str">"Hey, JavaScript"</span>)</pre>
+      </div>
+
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 Terminal – 01_hello.js</div>
+<pre><span class="out">Hello World!
+Hey, JavaScript</span></pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li><code>console.log("Text")</code> gibt Text im Terminal aus</li>
+        <li><code>//</code> für einzeilige Kommentare, <code>/* ... */</code> für mehrzeilige – der Computer ignoriert sie</li>
+        <li>Gestartet wird das Programm mit <strong>Code Runner</strong> in VS Code (▶-Button oder Rechtsklick → „Run Code“)</li>
+      </ul>
+
+      <div class="merke"><b>Merke dir:</b> In JavaScript sind Semikolons am Zeilenende
+        <b>optional</b> – du siehst in unseren Dateien beide Schreibweisen. Hauptsache, du bleibst
+        bei einer davon!</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Erstelle eine Datei <code>hallo.js</code>,
+        die deinen Namen und dein Alter mit <code>console.log</code> ausgibt.</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 2: 02_variablen.js ============ -->
+  <section class="topic" id="thema2">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">02</span>
+      Variablen mit let: das Gedächtnis deines Programms
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Variablen speichern Werte. In JavaScript entstehen sie mit <code>let</code> –
+         <strong>einmal</strong>, beim ersten Mal. Danach kannst du den Wert beliebig ändern.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 02_variablen.js</div>
+<pre><span class="cmt">// Variablen beim (ersten) Erzeugen: let</span>
+<span class="kw">let</span> <span class="var">x</span> = <span class="num">5</span>
+<span class="fn">console.log</span>(<span class="var">x</span>) <span class="cmt">// &lt;- Variable in Console ausgeben</span>
+
+<span class="cmt">// einer bestehenden Variablen einen neuen Wert zuweisen</span>
+<span class="var">x</span> = <span class="num">10</span>
+<span class="fn">console.log</span>(<span class="var">x</span>)
+
+<span class="cmt">// Wert einer Variable verändern</span>
+<span class="var">x</span> = <span class="var">x</span> + <span class="num">3</span>
+
+<span class="cmt">// Eine Zahl um genau 1 erhöhen</span>
+<span class="var">x</span>++
+<span class="fn">console.log</span>(<span class="var">x</span>)
+
+<span class="cmt">// Variablentypen</span>
+<span class="kw">let</span> <span class="var">zahl</span> = <span class="num">42</span> <span class="cmt">// integer (ganze Zahlen)</span>
+<span class="kw">let</span> <span class="var">komma</span> = <span class="num">4.56</span> <span class="cmt">// float (Kommazahlen)</span>
+<span class="kw">let</span> <span class="var">text</span> = <span class="str">"Blabla..."</span> <span class="cmt">// string (Texte / Zeichenkette)</span>
+<span class="kw">let</span> <span class="var">wahrheitswert</span> = <span class="kw">true</span> <span class="cmt">// boolean (wahr/falsch)</span>
+
+<span class="cmt">// Ausgabe von Text &amp; Variablen</span>
+<span class="fn">console.log</span>(<span class="str">"Die Variable komma hat den Wert "</span>+<span class="var">komma</span>)
+<span class="fn">console.log</span>(<span class="str">"In text steckt der Wert "</span>+<span class="var">text</span>+<span class="str">" drin"</span>)</pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li><code>let x = 5</code> erstellt die Variable – <strong>später</strong> reicht <code>x = 10</code> (ohne let!)</li>
+        <li><code>x++</code> addiert genau 1 – die Kurzform von <code>x = x + 1</code></li>
+        <li>Text und Variablen hängst du mit <strong><code>+</code></strong> zusammen: <code>"Wert: "+zahl</code></li>
+        <li>Die Datentypen: integer, float, string, boolean</li>
+      </ul>
+
+      <div class="achtung"><b>Achtung:</b> Schreibst du <code>let x = ...</code> zweimal,
+        gibt es einen Fehler („x has already been declared“). <code>let</code> nur beim ersten Mal!</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Lege Variablen für Name, Alter und
+        Lieblingszahl an. Lass das Alter um 10 erhöhen und gib einen schönen Satz aus.</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 3: 03_eingabe.js ============ -->
+  <section class="topic" id="thema3">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">03</span>
+      Eingaben: prompt-sync &amp; Number()
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Jetzt wird es interaktiv: Dein Programm stellt Fragen und der Benutzer antwortet im Terminal.
+         Dafür braucht man die Bibliothek <strong>prompt-sync</strong>.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 03_eingabe.js</div>
+<pre><span class="cmt">// 03_eingabe.js</span>
+
+<span class="cmt">// Immer wenn man eine Eingabe braucht, dann folgende Zeile</span>
+<span class="kw">const</span> <span class="var">prompt</span> = <span class="fn">require</span>(<span class="str">"prompt-sync"</span>)()
+
+<span class="kw">let</span> <span class="var">name</span> = <span class="fn">prompt</span>(<span class="str">"Hallo, wie ist dein Name: "</span>)
+
+<span class="fn">console.log</span>(<span class="str">"Hi "</span>+<span class="var">name</span>)
+
+<span class="cmt">// Der Befehl Number() macht aus der Eingabe eine Zahl</span>
+<span class="cmt">// (das nennt man Typecast)</span>
+<span class="kw">let</span> <span class="var">alter</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Wie alt bist du: "</span>))
+
+<span class="kw">let</span> <span class="var">gebjahr</span> = <span class="num">2026</span> - <span class="var">alter</span>
+
+<span class="fn">console.log</span>(<span class="str">"Dein Geburtsjahr ist: "</span> + <span class="var">gebjahr</span>)
+
+<span class="kw">let</span> <span class="var">in10</span> = <span class="var">alter</span> + <span class="num">10</span>
+
+<span class="fn">console.log</span>(<span class="str">"In 10 Jahren bist du: "</span> + <span class="var">in10</span>)</pre>
+      </div>
+
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 Terminal – 03_eingabe.js</div>
+<pre><span class="out">Hallo, wie ist dein Name: Kim
+Hi Kim
+Wie alt bist du: 17
+Dein Geburtsjahr ist: 2009
+In 10 Jahren bist du: 27</span></pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li><code>const prompt = require("prompt-sync")()</code> gehört an den Anfang <strong>jeder</strong> Datei mit Eingaben</li>
+        <li><code>prompt("Frage: ")</code> stellt die Frage und liefert die Eingabe zurück – <strong>immer als String!</strong></li>
+        <li><code>Number(...)</code> verwandelt den String in eine Zahl, damit du rechnen kannst</li>
+      </ul>
+
+      <div class="achtung"><b>Achtung:</b> <code>prompt</code> ist eine externe Bibliothek –
+        einmal pro Projekt installieren: <code>npm install prompt-sync</code> im Terminal.
+        Vergisst du das, kommt die Meldung <em>„Cannot find module 'prompt-sync'“</em>.</div>
+
+      <div class="merke"><b>Merke dir:</b> Mit <code>prompt("Alter: ")</code> und der Eingabe 17
+        bekommst du den <b>String "17"</b> – erst <code>Number()</code> macht die echte Zahl 17 daraus.
+        Sonst rechnet JS plötzlich mit Text!</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Frage zwei Zahlen ab und gib ihre Summe aus –
+        genau das ist die Übung <code>rechner1.js</code> weiter unten!</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 4: 04_abfrage.js ============ -->
+  <section class="topic" id="thema4">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">04</span>
+      Abfragen: if / else if / else
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Dein Programm soll entscheiden: Kommt die Person in den Club oder nicht?
+         Dafür gibt es die <strong>Abfrage</strong> mit <code>if</code>, <code>else if</code> und <code>else</code>.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 04_abfrage.js</div>
+<pre><span class="cmt">// 04_abfrage.js</span>
+
+<span class="cmt">// Abfrage = Entscheidung = Verzweigung = Überprüfung</span>
+<span class="kw">const</span> <span class="var">prompt</span> = <span class="fn">require</span>(<span class="str">"prompt-sync"</span>)()
+
+<span class="kw">let</span> <span class="var">alter</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Wie alt bist du: "</span>))
+
+<span class="cmt">// Mit if kann man eine Überprüfung machen</span>
+<span class="kw">if</span> (<span class="var">alter</span> &lt; <span class="num">16</span>) {
+    <span class="fn">console.log</span>(<span class="str">"Kommsch da nit rein."</span>)
+}
+<span class="kw">else if</span> (<span class="var">alter</span> &lt;= <span class="num">18</span>) {
+    <span class="fn">console.log</span>(<span class="str">"Aber keine harten Drinks."</span>)
+}
+<span class="kw">else if</span> (<span class="var">alter</span> == <span class="num">20</span>) { <span class="cmt">// wenn man genau gleich prüfen will: ==</span>
+    <span class="fn">console.log</span>(<span class="str">"Happy 20"</span>)
+}
+<span class="kw">else</span> {
+    <span class="fn">console.log</span>(<span class="str">"Viel Spaß!"</span>)
+}</pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li>JavaScript prüft <strong>von oben nach unten</strong> – die erste wahre Bedingung gewinnt, der Rest wird übersprungen</li>
+        <li><code>==</code> vergleicht auf Gleichheit, <code>&lt;</code>, <code>&gt;=</code> usw. vergleichen Zahlen und Text</li>
+        <li><code>else</code> greift, wenn keine Bedingung stimmt</li>
+      </ul>
+
+      <div class="merke"><b>Merke dir:</b> Die Reihenfolge ist entscheidend! Prüfe immer von
+        <b>eng</b> nach <b>weit</b> – hier ist das schon eingebaut: erst &lt; 16, dann &lt;= 18, dann == 20.
+        Mit <code>alter = 17</code> gewinnt übrigens <b>„Aber keine harten Drinks.“</b> – die erste
+        wahre Bedingung gewinnt, der Rest wird übersprungen.</div>
+
+      <div class="achtung"><b>Achtung:</b> Vergiss <code>Number()</code> bei der Eingabe nicht!
+        Mit dem String "20" mag der Vergleich zufällig klappen – aber jede Rechnung danach
+        geht schief.</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Schreibe eine Noten-Abfrage:
+        1 → „Sehr gut“, 2 → „Gut“, 3–4 → „Bestanden“, 5–6 → „Nicht bestanden“.</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 5: 05_abfrage2.js ============ -->
+  <section class="topic" id="thema5">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">05</span>
+      Kombinierte Abfragen: &amp;&amp; (UND)
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Manchmal müssen mehrere Dinge gleichzeitig stimmen – Benutzername <em>und</em> Passwort.
+         Dafür verkettest du Bedingungen mit <strong>logischen Operatoren</strong>.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 05_abfrage2.js</div>
+<pre><span class="cmt">// 05_abfrage2.js</span>
+
+<span class="kw">const</span> <span class="var">prompt</span> = <span class="fn">require</span>(<span class="str">"prompt-sync"</span>)()
+
+<span class="cmt">// Passwort Überprüfung</span>
+<span class="cmt">// richtiges Passwort: admin</span>
+<span class="cmt">// richtiger Username: user</span>
+
+<span class="kw">let</span> <span class="var">username</span> = <span class="fn">prompt</span>(<span class="str">"Gib deinen Usernamen ein: "</span>)
+<span class="kw">let</span> <span class="var">pw</span> = <span class="fn">prompt</span>(<span class="str">"Gib dein Passwort ein: "</span>)
+
+<span class="cmt">// &amp;&amp; bedeutet UND, das heißt BEIDE Überprüfungen müssen zutreffen</span>
+<span class="kw">if</span> (<span class="var">pw</span> == <span class="str">"admin"</span> <span class="kw">&amp;&amp;</span> <span class="var">username</span> == <span class="str">"user"</span>) {
+    <span class="fn">console.log</span>(<span class="str">"Korrekt"</span>)
+}
+<span class="kw">else</span> {
+    <span class="fn">console.log</span>(<span class="str">"Falsch"</span>)
+}</pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li><code>&amp;&amp;</code> (UND): <strong>beide</strong> Bedingungen müssen wahr sein</li>
+        <li>Beide Prüfungen stehen in <strong>einer</strong> Klammer – das Ergebnis ist ein einziges wahr/falsch</li>
+      </ul>
+
+      <div class="merke"><b>Merke dir:</b> <code>&amp;&amp;</code> verlangt, dass <b>beide</b>
+        Bedingungen wahr sind – Passwort <em>und</em> Username müssen stimmen. Fehlt auch nur
+        eins, greift der <code>else</code>-Zweig.</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Baue eine Alters-UND-Wohnort-Abfrage:
+        „Zutritt nur, wenn du mindestens 18 bist <strong>und</strong> aus Wien kommst“.</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 6: 06_zahlen-formatieren.js ============ -->
+  <section class="topic" id="thema6">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">06</span>
+      Zahlen formatieren: toFixed &amp; Math.round
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Kommazahlen sind oft grauslig lang. Mit <code>toFixed()</code> und den <code>Math</code>-Funktionen
+         bringst du sie in Form – unverzichtbar für Preise und Ergebnisse.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 06_zahlen-formatieren.js</div>
+<pre><span class="cmt">// 06_zahlen-formatieren.js</span>
+
+<span class="kw">let</span> <span class="var">zahl</span> = <span class="num">15.4446465456</span>
+
+<span class="cmt">// Eine Zahl auf bestimmte Kommastellen genau: .toFixed(ANZAHL)</span>
+<span class="fn">console.log</span>( <span class="var">zahl</span>.<span class="fn">toFixed</span>(<span class="num">5</span>) )
+
+<span class="cmt">// auf ganze Zahlen runden</span>
+
+<span class="cmt">// "kaufmännisch" runden</span>
+<span class="fn">console.log</span>( <span class="fn">Math.round</span>(<span class="var">zahl</span>) )
+
+<span class="cmt">// immer AUFrunden</span>
+<span class="fn">console.log</span>(<span class="fn">Math.ceil</span>(<span class="var">zahl</span>))
+
+<span class="cmt">// immer ABrunden</span>
+<span class="fn">console.log</span>(<span class="fn">Math.floor</span>(<span class="var">zahl</span>))</pre>
+      </div>
+
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 Terminal – 06_zahlen-formatieren.js</div>
+<pre><span class="out">15.44465
+15
+16
+15</span></pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li><code>zahl.toFixed(5)</code> → genau 5 Nachkommastellen: <code>15.44465</code></li>
+        <li><code>Math.round()</code> – kaufmännisch runden (ab .5 auf)</li>
+        <li><code>Math.ceil()</code> – immer aufrunden, <code>Math.floor()</code> – immer abrunden</li>
+      </ul>
+
+      <div class="merke"><b>Merke dir:</b> <code>Math.floor()</code> brauchst du gleich wieder –
+        für Zufallszahlen in Lektion 07!</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Frage einen Preis ab und gib ihn schön
+        formatiert mit 2 Nachkommastellen aus, z. B. „Das kostet 19.99 €“.</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 7: 07_zufallszahlen.js ============ -->
+  <section class="topic" id="thema7">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">07</span>
+      Zufallszahlen mit Math.random()
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Mit <code>Math.random()</code> erzeugt JavaScript Zufallszahlen – die Basis für Spiele
+         wie das Zahlenraten. Die Formel sieht tricky aus, ist aber ein festes Muster.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 07_zufallszahlen.js</div>
+<pre><span class="cmt">// 07_zufallszahlen.js</span>
+
+<span class="cmt">// Zufallzahlen in Js mit Math.random()</span>
+<span class="kw">let</span> <span class="var">zuza</span> = <span class="fn">Math.floor</span>(<span class="fn">Math.random</span>()*<span class="num">10</span>)+<span class="num">1</span>
+<span class="fn">console.log</span>(<span class="var">zuza</span>)
+
+<span class="kw">let</span> <span class="var">zuza2</span> = <span class="fn">Math.floor</span>(<span class="fn">Math.random</span>()*<span class="num">200</span>)+<span class="num">1</span>
+<span class="fn">console.log</span>(<span class="var">zuza2</span>)</pre>
+      </div>
+
+      <h3>🔍 Die Formel Schritt für Schritt</h3>
+      <ul>
+        <li><code>Math.random()</code> liefert eine Kommazahl zwischen 0 und 1 (z. B. 0.7284…)</li>
+        <li><code>* 10</code> macht daraus etwas zwischen 0 und 9.99…</li>
+        <li><code>Math.floor()</code> schneidet die Kommastellen ab → 0 bis 9</li>
+        <li><code>+ 1</code> schiebt alles hoch → <strong>1 bis 10</strong> ✓</li>
+      </ul>
+
+      <div class="merke"><b>Merke dir:</b> Das Muster ist immer gleich:
+        <code>Math.floor(Math.random()*OBERE_GRENZE)+1</code> liefert eine ganze Zahl
+        von 1 bis OBERE_GRENZE. Einen Würfel baust du mit <code>*6</code>.</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Simuliere einen Würfel:
+        gib bei jedem Start eine zufällige Zahl von 1 bis 6 aus.</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 8: 08_for-schleife.js ============ -->
+  <section class="topic" id="thema8">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">08</span>
+      Die for-Schleife (3 Parameter)
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Etwas 10-mal wiederholen? Dafür gibt es die <strong>for-Schleife</strong> –
+         definiert über drei Parameter.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 08_for-schleife.js</div>
+<pre><span class="cmt">// 08_for-schleife.js</span>
+
+<span class="cmt">// FOR Schleife (definiert mit 3 Parametern - getrennt durch ;)</span>
+<span class="cmt">// 1. Parameter: Startwert (wo zählt die Schleife los?)</span>
+<span class="cmt">// 2. Parameter: Endwert/Abbruchbedingung (wie weit zählt die Schleife?)</span>
+<span class="cmt">// 3. Parameter: Schrittweite (in welchen Schritten zählt die Schleife?)</span>
+
+<span class="kw">for</span> (<span class="var">i</span>=<span class="num">1</span>; <span class="var">i</span>&lt;=<span class="num">10</span>; <span class="var">i</span>++) {
+    <span class="fn">console.log</span>(<span class="str">"FOR Schleife "</span>+<span class="var">i</span>)
+}</pre>
+      </div>
+
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 Terminal – 08_for-schleife.js</div>
+<pre><span class="out">FOR Schleife 1
+FOR Schleife 2
+...
+FOR Schleife 10</span></pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li><strong>Startwert:</strong> <code>i=1</code> – die Zählvariable beginnt bei 1</li>
+        <li><strong>Abbruchbedingung:</strong> <code>i&lt;=10</code> – läuft, solange i kleiner oder gleich 10 ist</li>
+        <li><strong>Schrittweite:</strong> <code>i++</code> – erhöht i nach jedem Durchlauf um 1</li>
+      </ul>
+
+      <div class="merke"><b>Merke dir:</b> Einzige Besonderheit: die Variable i wird hier
+        ohne <code>let</code> deklariert. Sauberer wäre <code>let i=1</code> –
+        beide Varianten funktionieren in unseren Programmen.</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Zähle von 1 bis 20 – und dann rückwärts
+        von 10 bis 1 (Tipp: Schrittweite <code>i--</code> statt <code>i++</code>).</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 9: 09_while-schleife.js ============ -->
+  <section class="topic" id="thema9">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">09</span>
+      Die while-Schleife (1 Parameter)
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Die <strong>while-Schleife</strong> hat nur einen Parameter: die Abbruchbedingung.
+         Sie läuft, <em>solange</em> etwas wahr ist – ideal, wenn du die Anzahl noch nicht kennst.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 09_while-schleife.js</div>
+<pre><span class="cmt">// 09_while-schleife.js</span>
+
+<span class="cmt">// WHILE Schleife (nur 1 Parameter)</span>
+<span class="cmt">// 1 Parameter: Abbruchbedingung</span>
+
+<span class="kw">let</span> <span class="var">i</span>=<span class="num">1</span>
+
+<span class="kw">while</span> (<span class="var">i</span>&lt;=<span class="num">10</span>) {
+    <span class="fn">console.log</span>(<span class="str">"WHILE Schleife "</span>+<span class="var">i</span>)
+    <span class="var">i</span>++
+}</pre>
+      </div>
+
+      <h3>🔍 for oder while – wann was?</h3>
+      <ul>
+        <li><strong>for:</strong> wenn du weißt, <em>wie oft</em> die Schleife laufen soll („zähle von 1 bis 10“)</li>
+        <li><strong>while:</strong> wenn du nur eine <em>Bedingung</em> kennst („solange der Tipp falsch ist“)</li>
+      </ul>
+
+      <div class="achtung"><b>Achtung:</b> Bei while steht <code>i++</code> <b>im Schleifenkörper</b> –
+        vergisst du es, bleibt die Bedingung für immer wahr: <b>Endlosschleife!</b>
+        Abbrechen kannst du im Terminal mit <b>Strg + C</b>.</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Gib mit einer while-Schleife die Zahlen
+        20, 18, 16, … bis 2 aus (Tipp: Schrittweite <code>i = i-2</code>).</div>
+    </div>
+  </section>
+
+  <!-- ============ THEMA 10: 10_while-mit-frage.js ============ -->
+  <section class="topic" id="thema10">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">10</span>
+      while mit Frage: „Nochmal?“
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p>Das wichtigste Muster für interaktive Programme: Die Schleife läuft immer wieder –
+         bis der Benutzer sagt, dass Schluss ist.</p>
+
+      <div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> 10_while-mit-frage.js</div>
+<pre><span class="cmt">// 10_while-mit-frage.js</span>
+<span class="kw">const</span> <span class="var">prompt</span> = <span class="fn">require</span>(<span class="str">"prompt-sync"</span>)()
+<span class="cmt">// WHILE Schleife mit Frage ob man von vorne starten möchte</span>
+<span class="kw">let</span> <span class="var">nochmal</span> = <span class="str">"ja"</span>
+
+<span class="kw">while</span> (<span class="var">nochmal</span> == <span class="str">"ja"</span>) {
+    <span class="fn">console.log</span>(<span class="str">"Ich bin ein Pseudo-Programm..."</span>)
+
+    <span class="var">nochmal</span> = <span class="fn">prompt</span>(<span class="str">"Willst du nochmal starten? (ja/nein): "</span>)
+}</pre>
+      </div>
+
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 Terminal – 10_while-mit-frage.js</div>
+<pre><span class="out">Ich bin ein Pseudo-Programm...
+Willst du nochmal starten? (ja/nein): ja
+Ich bin ein Pseudo-Programm...
+Willst du nochmal starten? (ja/nein): nein</span></pre>
+      </div>
+
+      <h3>🔍 Was du hier lernst</h3>
+      <ul>
+        <li>Die Variable <code>nochmal</code> startet mit <code>"ja"</code> – so läuft die Schleife mindestens einmal</li>
+        <li>Am <strong>Ende des Schleifenkörpers</strong> wird neu gefragt – antwortet der Benutzer „nein“, endet die Schleife</li>
+        <li>Dieses Muster steckt in <code>kopfrechnen_2b.js</code> und <code>zahlenraten.js</code>!</li>
+      </ul>
+
+      <div class="merke"><b>Merke dir:</b> Das ist der Bauplan für fast jedes Spiel und
+        jedes interaktive Programm: <b>Schleife → Programmteil → Frage am Ende</b>.</div>
+
+      <div class="aufgabe"><b>✏️ Deine Aufgabe:</b> Bau einen Mini-Chatbot: Er stellt eine Frage,
+        antwortet mit einem Witz – und fragt dann, ob er noch einen erzählen soll.</div>
+    </div>
+  </section>
+
+  <!-- ============ SPICKZETTEL ============ -->
+  <h2 class="section-title">📋 JavaScript-Spickzettel</h2>
+  <p class="section-sub">Die wichtigsten Befehle aus den Lektionen 01–10 – zum Lernen und Nachschlagen.</p>
+
+  <table class="cheat-table">
+    <tr><th>Syntax</th><th>Bedeutung</th></tr>
+    <tr><td><code>Code Runner</code> (▶ in VS Code)</td><td>Programm starten (Rechtsklick → „Run Code“)</td></tr>
+    <tr><td><code>console.log("Text")</code></td><td>Ausgabe im Terminal</td></tr>
+    <tr><td><code>//</code> bzw. <code>/* ... */</code></td><td>Einzeiliger / mehrzeiliger Kommentar</td></tr>
+    <tr><td><code>let x = 5</code></td><td>Variable erstellen (nur beim 1. Mal mit let!)</td></tr>
+    <tr><td><code>"Text " + variable</code></td><td>Strings und Variablen mit + verketten</td></tr>
+    <tr><td><code>x++ / x--</code></td><td>Um 1 erhöhen / erniedrigen</td></tr>
+    <tr><td><code>npm install prompt-sync</code></td><td>Bibliothek für Eingaben (1× pro Projekt)</td></tr>
+    <tr><td><code>const prompt = require("prompt-sync")()</code></td><td>Eingaben aktivieren (Anfang jeder Datei)</td></tr>
+    <tr><td><code>prompt("Frage: ")</code></td><td>Eingabe abfragen – liefert immer einen String!</td></tr>
+    <tr><td><code>Number(prompt(...))</code></td><td>Eingabe in eine Zahl verwandeln</td></tr>
+    <tr><td><code>if / else if / else</code></td><td>Abfrage – erste wahre Bedingung gewinnt</td></tr>
+    <tr><td><code>== &amp;&amp;</code></td><td>Vergleich auf Gleichheit / UND-Verknüpfung (beide müssen wahr sein)</td></tr>
+    <tr><td><code>zahl.toFixed(2)</code></td><td>Auf 2 Nachkommastellen formatieren</td></tr>
+    <tr><td><code>Math.round / ceil / floor</code></td><td>Kaufmännisch / immer auf / immer ab runden</td></tr>
+    <tr><td><code>Math.floor(Math.random()*10)+1</code></td><td>Zufallszahl von 1 bis 10 (Muster!)</td></tr>
+    <tr><td><code>for (i=1; i&lt;=10; i++)</code></td><td>Schleife: Start; Abbruchbedingung; Schrittweite</td></tr>
+    <tr><td><code>while (Bedingung)</code></td><td>Solange-Schleife – i++ nicht im Körper vergessen!</td></tr>
+  </table>
+
+  <!-- ============ ÜBUNGSAUFGABEN ============ -->
+  <h2 class="section-title">🏋️ Übungs-Aufgaben</h2>
+  <p class="section-sub">Die Aufgaben aus dem Unterricht – probiere sie erst selbst, bevor du die Lösung aufklappst!
+     Die Dateien baust du in VS Code auf und startest sie mit <strong>Code Runner</strong>.</p>
+
+  <!-- UE-00: rechner1 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE0</span>
+      rechner1.js: Zwei Zahlen addieren
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe:</strong> Das Programm soll zur Eingabe von 2 Zahlen auffordern.
+         Anschließend sollen diese Zahlen addiert und das Ergebnis ausgegeben werden.</p>
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 So könnte es aussehen</div>
+<pre><span class="out">Zahl 1 eingeben: 6
+Zahl 2 eingeben: 8
+6 plus 8 ergibt 14</span></pre>
+      </div>
+      <div class="merke"><b>Tipp:</b> Alles, was du brauchst, steht in <b>Lektion 03</b>:
+        <code>Number(prompt(...))</code> und das Verketten mit <code>+</code>.</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> rechner1.js – Kernidee</div>
+<pre><span class="kw">const</span> <span class="var">prompt</span> = <span class="fn">require</span>(<span class="str">"prompt-sync"</span>)()
+<span class="kw">let</span> <span class="var">a</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Zahl 1 eingeben: "</span>))
+<span class="kw">let</span> <span class="var">b</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Zahl 2 eingeben: "</span>))
+<span class="fn">console.log</span>(<span class="var">a</span>+<span class="str">" plus "</span>+<span class="var">b</span>+<span class="str">" ergibt "</span>+(<span class="var">a</span>+<span class="var">b</span>))</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-00: inch_umrechner1 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE0</span>
+      inch_umrechner1.js: Inch in cm
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe:</strong> Das Programm soll zur Eingabe einer Länge in Inch auffordern.
+         Anschließend soll der Wert in cm umgerechnet und ausgegeben werden.</p>
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 So könnte es aussehen</div>
+<pre><span class="out">Länge in Inch eingeben: 7
+7in sind 17.78cm</span></pre>
+      </div>
+      <div class="merke"><b>Tipp:</b> 1 Inch = 2.54 cm. Und damit aus 17.78 nicht
+        17.780000000000001 wird: <b>Lektion 06</b>, <code>toFixed(2)</code>!</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> inch_umrechner1.js – Kernidee</div>
+<pre><span class="kw">let</span> <span class="var">inch</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Länge in Inch eingeben: "</span>))
+<span class="kw">let</span> <span class="var">cm</span> = <span class="var">inch</span> * <span class="num">2.54</span>
+<span class="fn">console.log</span>(<span class="var">inch</span>+<span class="str">"in sind "</span>+<span class="var">cm</span>.<span class="fn">toFixed</span>(<span class="num">2</span>)+<span class="str">"cm"</span>)</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-01: rechner2 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE1</span>
+      rechner2.js: Rechenart wählen
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe (Erweiterung zu rechner1.js):</strong> Das Programm soll zusätzlich zu den
+         2 Zahlen abfragen, welche Rechenoperation durchgeführt werden soll (+, -, *, /).
+         Entsprechend der Eingabe soll das Ergebnis mit den 2 eingegebenen Zahlen berechnet werden.</p>
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 So könnte es aussehen</div>
+<pre><span class="out">Zahl 1 eingeben: 5
+Zahl 2 eingeben: 7
+Welche Rechenart? (+, -, *, /): *
+5*7 ergibt 35</span></pre>
+      </div>
+      <div class="merke"><b>Tipp:</b> Die Rechenart ist ein <b>String</b> – also mit
+        <code>if (art == "+") ... else if ...</code> verzweigen (<b>Lektion 04</b>).</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> rechner2.js – Kernidee</div>
+<pre><span class="kw">let</span> <span class="var">a</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Zahl 1 eingeben: "</span>))
+<span class="kw">let</span> <span class="var">b</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Zahl 2 eingeben: "</span>))
+<span class="kw">let</span> <span class="var">art</span> = <span class="fn">prompt</span>(<span class="str">"Welche Rechenart? (+, -, *, /): "</span>)
+<span class="kw">let</span> <span class="var">erg</span>
+
+<span class="kw">if</span> (<span class="var">art</span> == <span class="str">"+"</span>) <span class="var">erg</span> = <span class="var">a</span>+<span class="var">b</span>
+<span class="kw">else if</span> (<span class="var">art</span> == <span class="str">"-"</span>) <span class="var">erg</span> = <span class="var">a</span>-<span class="var">b</span>
+<span class="kw">else if</span> (<span class="var">art</span> == <span class="str">"*"</span>) <span class="var">erg</span> = <span class="var">a</span>*<span class="var">b</span>
+<span class="kw">else if</span> (<span class="var">art</span> == <span class="str">"/"</span>) <span class="var">erg</span> = <span class="var">a</span>/<span class="var">b</span>
+
+<span class="fn">console.log</span>(<span class="var">a</span>+<span class="var">art</span>+<span class="var">b</span>+<span class="str">" ergibt "</span>+<span class="var">erg</span>)</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-01: rechner3 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE1</span>
+      rechner3.js: Division durch 0 abfangen
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe (Erweiterung zu rechner2.js):</strong> Der Sonderfall einer Division durch 0
+         (ist nicht möglich) soll mit einer Abfrage „abgefangen“ werden.
+         Demnach soll eine entsprechende Rückmeldung an den User / die Userin erfolgen.</p>
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 So könnte es aussehen</div>
+<pre><span class="out">Zahl 1 eingeben: 6
+Zahl 2 eingeben: 0
+Welche Rechenart? (+, -, *, /): /
+6/0 ergibt einen Fehler, weil man durch 0 nicht dividieren kann ;-)</span></pre>
+      </div>
+      <div class="merke"><b>Tipp:</b> Im <code>else if (art == "/")</code>-Zweig kommt eine
+        <b>weitere if-Abfrage</b> hinein: Ist b gleich 0?</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> rechner3.js – Kernidee</div>
+<pre><span class="kw">else if</span> (<span class="var">art</span> == <span class="str">"/"</span>) {
+    <span class="kw">if</span> (<span class="var">b</span> == <span class="num">0</span>) {
+        <span class="fn">console.log</span>(<span class="var">a</span>+<span class="str">"/0 ergibt einen Fehler, weil man durch 0 nicht dividieren kann ;-)"</span>)
+    }
+    <span class="kw">else</span> {
+        <span class="var">erg</span> = <span class="var">a</span>/<span class="var">b</span>
+    }
+}</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-01: kopfrechnen_1 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE1</span>
+      kopfrechnen_1.js: Aufgabe stellen &amp; prüfen
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe:</strong> Schreibe ein Programm, das dem Benutzer / der Benutzerin eine
+         definierte Kopfrechenaufgabe stellt (die Zahlen legst du fest). Der Benutzer / die
+         Benutzerin gibt das Ergebnis ein. Anschließend werden die Eingabe und das korrekte
+         Ergebnis angezeigt.</p>
+      <div class="code-window">
+        <div class="code-title terminal"><span class="dots"><i></i><i></i><i></i></span> 💻 Mögliche Ausgaben</div>
+<pre><span class="out">Die Aufgabe: 3 + 5                    Die Aufgabe: 7 + 15
+Bitte ihr Ergebnis eingeben: 9       Bitte ihr Ergebnis eingeben: 22
+9 ist falsch                          22 ist richtig
+Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
+      </div>
+      <div class="merke"><b>Tipp:</b> Zwei Variablen für die festen Zahlen, eine für das
+        Ergebnis des Benutzers – und dann eine if/else-Abfrage (<b>Lektion 04</b>).</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> kopfrechnen_1.js – Kernidee</div>
+<pre><span class="kw">let</span> <span class="var">a</span> = <span class="num">3</span>, <span class="var">b</span> = <span class="num">5</span>
+<span class="fn">console.log</span>(<span class="str">"Die Aufgabe: "</span>+<span class="var">a</span>+<span class="str">" + "</span>+<span class="var">b</span>)
+
+<span class="kw">let</span> <span class="var">tipp</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Bitte ihr Ergebnis eingeben: "</span>))
+
+<span class="kw">if</span> (<span class="var">tipp</span> == <span class="var">a</span>+<span class="var">b</span>) {
+    <span class="fn">console.log</span>(<span class="var">tipp</span>+<span class="str">" ist richtig"</span>)
+}
+<span class="kw">else</span> {
+    <span class="fn">console.log</span>(<span class="var">tipp</span>+<span class="str">" ist falsch"</span>)
+}
+<span class="fn">console.log</span>(<span class="str">"Korrektes Ergebnis: "</span>+(<span class="var">a</span>+<span class="var">b</span>))</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-02: steuern_1 + steuern_2 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE2</span>
+      steuern_1 &amp; steuern_2: Einkommensteuer
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>steuern_1.js:</strong> Schreibe ein Programm zur Berechnung der jährlich zu
+         zahlenden Einkommensteuer. Die Anwenderin / der Anwender wird aufgefordert, das jährliche
+         Bruttoeinkommen einzugeben. Anschließend werden 20 % dieses Betrags berechnet und angezeigt.
+         <em>(Achtung: Dies entspricht nicht der tatsächlichen Berechnung der Einkommensteuer!)</em></p>
+      <p><strong>steuern_2.js (Erweiterung):</strong> Erst ab einem Einkommen von mehr als
+         13.308 € werden die 20 % Einkommensteuer berechnet. Darunter fällt keine Einkommensteuer
+         an (was auch ausgegeben werden soll).</p>
+      <div class="merke"><b>Tipp:</b> steuern_1 ist reines Rechnen (<code>einkommen * 0.2</code>),
+        steuern_2 packt eine if/else-Abfrage (<b>Lektion 04</b>) darum.
+        Für schöne Euro-Beträge: <code>toFixed(2)</code>.</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> steuern_1 / steuern_2 – Kernidee</div>
+<pre><span class="cmt">// steuern_1.js:</span>
+<span class="kw">let</span> <span class="var">brutto</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Jährliches Bruttoeinkommen: "</span>))
+<span class="fn">console.log</span>(<span class="str">"Einkommensteuer: "</span>+(<span class="var">brutto</span>*<span class="num">0.2</span>).<span class="fn">toFixed</span>(<span class="num">2</span>)+<span class="str">" €"</span>)
+
+<span class="cmt">// steuern_2.js – mit Abfrage:</span>
+<span class="kw">if</span> (<span class="var">brutto</span> &gt; <span class="num">13308</span>) {
+    <span class="fn">console.log</span>(<span class="str">"Einkommensteuer: "</span>+(<span class="var">brutto</span>*<span class="num">0.2</span>).<span class="fn">toFixed</span>(<span class="num">2</span>)+<span class="str">" €"</span>)
+}
+<span class="kw">else</span> {
+    <span class="fn">console.log</span>(<span class="str">"Keine Einkommensteuer fällig."</span>)
+}</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-02: steuern_3 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE2</span>
+      steuern_3.js: Steuer-Tabelle (Mehrfachverzweigung)
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe:</strong> Programmiere die Berechnung der Einkommensteuer nach der
+         offiziellen Tabelle (bis 13.539 € → 0 %, bis 21.992 € → 20 %, bis 36.458 € → 30 %,
+         bis 70.365 € → 40 %, bis 104.859 € → 48 %, bis 1.000.000 € → 50 %, ab 1.000.000 € → 55 %).</p>
+      <p><strong>Achtung:</strong> Die Berechnung ist <em>staffelförmig</em>: Für die ersten
+         13.539 € werden keine Steuern berechnet, für den Teil <em>darüber</em> bis 21.992 € werden
+         20 % berechnet, usw. – der über 13.539 € hinausgehende Teil wird stufenweise versteuert.</p>
+      <div class="merke"><b>Tipp:</b> Eine lange if/else-if-Kette von <b>eng nach weit</b>
+        (<b>Lektion 04</b>!). Für jede Stufe gilt: nur der Betrag <b>über der Grenze</b>
+        wird mit dem Satz dieser Stufe versteuert.</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> steuern_3.js – Kernidee</div>
+<pre><span class="kw">let</span> <span class="var">e</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Einkommen: "</span>))
+<span class="kw">let</span> <span class="var">steuer</span>
+
+<span class="kw">if</span> (<span class="var">e</span> &lt;= <span class="num">13539</span>) {
+    <span class="var">steuer</span> = <span class="num">0</span>
+}
+<span class="kw">else if</span> (<span class="var">e</span> &lt;= <span class="num">21992</span>) {
+    <span class="var">steuer</span> = (<span class="var">e</span>-<span class="num">13539</span>) * <span class="num">0.2</span>
+}
+<span class="kw">else if</span> (<span class="var">e</span> &lt;= <span class="num">36458</span>) {
+    <span class="var">steuer</span> = (<span class="num">21992</span>-<span class="num">13539</span>)*<span class="num">0.2</span> + (<span class="var">e</span>-<span class="num">21992</span>)*<span class="num">0.3</span>
+}
+<span class="cmt">// ... die weiteren Stufen folgen demselben Muster:</span>
+<span class="cmt">// bisherige Steuer + (e - obere Grenze der Stufe) * Satz</span>
+
+<span class="fn">console.log</span>(<span class="str">"Einkommensteuer: "</span>+<span class="var">steuer</span>.<span class="fn">toFixed</span>(<span class="num">2</span>)+<span class="str">" €"</span>)</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-02: steuern_4 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE2</span>
+      steuern_4.js: Gehalt + Familienstand (Logik)
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe:</strong> Gegeben ist folgende (fiktive) Tabelle für den monatlich zu
+         zahlenden Steuerbetrag: Gehalt &gt; 4.000 € + ledig → 26 %, &gt; 4.000 € + verheiratet → 22 %,
+         &lt;= 4.000 € + ledig → 22 %, &lt;= 4.000 € + verheiratet → 18 %.
+         Schreibe ein Programm, welches das monatliche Gehalt und den Familienstand abfragt und
+         den zu zahlenden Steuerbetrag berechnet und anzeigt.</p>
+      <div class="merke"><b>Tipp:</b> Zwei Bedingungen gleichzeitig prüfen? Genau dafür gibt es
+        <code>&amp;&amp;</code> (<b>Lektion 05</b>): <code>if (gehalt &gt; 4000 &amp;&amp; stand == "ledig")</code>.</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> steuern_4.js – Kernidee</div>
+<pre><span class="kw">let</span> <span class="var">gehalt</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Monatliches Gehalt: "</span>))
+<span class="kw">let</span> <span class="var">stand</span> = <span class="fn">prompt</span>(<span class="str">"Familienstand (ledig/verheiratet): "</span>)
+<span class="kw">let</span> <span class="var">satz</span>
+
+<span class="kw">if</span> (<span class="var">gehalt</span> &gt; <span class="num">4000</span> <span class="kw">&amp;&amp;</span> <span class="var">stand</span> == <span class="str">"ledig"</span>) <span class="var">satz</span> = <span class="num">0.26</span>
+<span class="kw">else if</span> (<span class="var">gehalt</span> &gt; <span class="num">4000</span> <span class="kw">&amp;&amp;</span> <span class="var">stand</span> == <span class="str">"verheiratet"</span>) <span class="var">satz</span> = <span class="num">0.22</span>
+<span class="kw">else if</span> (<span class="var">gehalt</span> &lt;= <span class="num">4000</span> <span class="kw">&amp;&amp;</span> <span class="var">stand</span> == <span class="str">"ledig"</span>) <span class="var">satz</span> = <span class="num">0.22</span>
+<span class="kw">else</span> <span class="var">satz</span> = <span class="num">0.18</span>
+
+<span class="fn">console.log</span>(<span class="str">"Steuerbetrag: "</span>+(<span class="var">gehalt</span>*<span class="var">satz</span>).<span class="fn">toFixed</span>(<span class="num">2</span>)+<span class="str">" €"</span>)</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-03: quadratzahlen -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE3</span>
+      quadratzahlen_1 &amp; _2.js: Quadratzahlen mit Abbruch
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>quadratzahlen_1.js:</strong> Schreibe ein Programm, das alle Quadratzahlen ausgibt,
+         die kleiner als 200 sind (0, 1, 4, 9, 16, 25, 36, ...).</p>
+      <p><strong>quadratzahlen_2.js:</strong> Schreibe ein Programm, das jede zweite Quadratzahl
+         ausgibt, die kleiner als 200 ist (0, 4, 16, 36, ...).</p>
+      <div class="merke"><b>Tipp:</b> Die Abbruchbedingung ist nicht der Zähler, sondern
+        <b>das Quadrat selbst</b>: <code>i*i &lt; 200</code>. Und „jede zweite“ heißt:
+        Schrittweite <code>i = i+2</code> (<b>Lektion 08</b>).</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> quadratzahlen.js – Kernidee</div>
+<pre><span class="cmt">// quadratzahlen_1.js:</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span>=<span class="num">0</span>; <span class="var">i</span>*<span class="var">i</span>&lt;<span class="num">200</span>; <span class="var">i</span>++) {
+    <span class="fn">console.log</span>(<span class="var">i</span>*<span class="var">i</span>)
+}
+
+<span class="cmt">// quadratzahlen_2.js – Schrittweite 2:</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span>=<span class="num">0</span>; <span class="var">i</span>*<span class="var">i</span>&lt;<span class="num">200</span>; <span class="var">i</span>=<span class="var">i</span>+<span class="num">2</span>) {
+    <span class="fn">console.log</span>(<span class="var">i</span>*<span class="var">i</span>)
+}</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-03: zahlenfolge_1 -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE3</span>
+      zahlenfolge_1.js: -10 bis 10 einordnen
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe:</strong> Schreibe ein Programm, das alle ganzen Zahlen von -10 bis 10
+         ausgibt und bei jeder Zahl angibt, ob sie positiv oder negativ oder gleich 0 ist.</p>
+      <div class="merke"><b>Tipp:</b> Schleife von -10 bis 10 (<b>Lektion 08</b>) – und im
+         Schleifenkörper eine if/else-if/else-Kette (<b>Lektion 04</b>).
+        Hier kombinierst du zum ersten Mal <strong>Schleife + Abfrage</strong>!</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> zahlenfolge_1.js – Kernidee</div>
+<pre><span class="kw">for</span> (<span class="kw">let</span> <span class="var">i</span>=<span class="num">-10</span>; <span class="var">i</span>&lt;=<span class="num">10</span>; <span class="var">i</span>++) {
+    <span class="kw">if</span> (<span class="var">i</span> &gt; <span class="num">0</span>) <span class="fn">console.log</span>(<span class="var">i</span>+<span class="str">" ist positiv"</span>)
+    <span class="kw">else if</span> (<span class="var">i</span> &lt; <span class="num">0</span>) <span class="fn">console.log</span>(<span class="var">i</span>+<span class="str">" ist negativ"</span>)
+    <span class="kw">else</span> <span class="fn">console.log</span>(<span class="var">i</span>+<span class="str">" ist gleich 0"</span>)
+}</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-03: kopfrechnen_2a/2b -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE3</span>
+      kopfrechnen_2a &amp; _2b.js: Aufgaben wiederholen
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>kopfrechnen_2a.js:</strong> Erweitere das Programm kopfrechnen_2.js so,
+         dass <strong>3 Aufgaben</strong> gestellt werden.</p>
+      <p><strong>kopfrechnen_2b.js:</strong> Erweitere das Programm kopfrechnen_2.js so,
+         dass nach der Aufgabe eine Eingabe abfragt, ob man <strong>weitermachen</strong> möchte.</p>
+      <div class="merke"><b>Tipp:</b> Für 2a: eine for-Schleife um die Aufgabe
+        (<b>Lektion 08</b>) und Zufallszahlen (<b>Lektion 07</b>).
+        Für 2b: das „Nochmal?“-Muster aus <b>Lektion 10</b>!</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> kopfrechnen_2a / 2b – Kernidee</div>
+<pre><span class="cmt">// kopfrechnen_2a.js – 3 Aufgaben mit for:</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="var">n</span>=<span class="num">1</span>; <span class="var">n</span>&lt;=<span class="num">3</span>; <span class="var">n</span>++) {
+    <span class="kw">let</span> <span class="var">a</span> = <span class="fn">Math.floor</span>(<span class="fn">Math.random</span>()*<span class="num">10</span>)+<span class="num">1</span>
+    <span class="kw">let</span> <span class="var">b</span> = <span class="fn">Math.floor</span>(<span class="fn">Math.random</span>()*<span class="num">10</span>)+<span class="num">1</span>
+    <span class="kw">let</span> <span class="var">tipp</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Die Aufgabe: "</span>+<span class="var">a</span>+<span class="str">" + "</span>+<span class="var">b</span>))
+    <span class="kw">if</span> (<span class="var">tipp</span> == <span class="var">a</span>+<span class="var">b</span>) <span class="fn">console.log</span>(<span class="str">"richtig!"</span>)
+    <span class="kw">else</span> <span class="fn">console.log</span>(<span class="str">"falsch – korrekt: "</span>+(<span class="var">a</span>+<span class="var">b</span>))
+}
+
+<span class="cmt">// kopfrechnen_2b.js – weitermachen? (Lektion 10):</span>
+<span class="kw">let</span> <span class="var">weiter</span> = <span class="str">"ja"</span>
+<span class="kw">while</span> (<span class="var">weiter</span> == <span class="str">"ja"</span>) {
+    <span class="cmt">// ... eine zufällige Aufgabe stellen und prüfen ...</span>
+    <span class="var">weiter</span> = <span class="fn">prompt</span>(<span class="str">"Noch eine Aufgabe? (ja/nein): "</span>)
+}</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- UE-03: zahlenraten -->
+  <section class="topic">
+    <button class="topic-btn" onclick="toggleTopic(this)">
+      <span class="topic-num">UE3</span>
+      zahlenraten.js: Das große Spiel
+      <span class="arrow">▼</span>
+    </button>
+    <div class="topic-body">
+      <p><strong>Aufgabe:</strong> Das Programm soll sich eine zufällige Zahl „ausdenken“,
+         zur Eingabe eines Tipps auffordern und Feedback geben, ob der Tipp richtig oder falsch war –
+         bei falschem Tipp einen <strong>Hinweis</strong> („höher“ oder „niedriger“),
+         beim richtigen Tipp die <strong>Anzahl der benötigten Versuche</strong> ausgeben.</p>
+      <div class="merke"><b>Tipp:</b> Alles zusammen: Zufallszahl (<b>Lektion 07</b>),
+        while-Schleife bis der Tipp stimmt (<b>Lektion 09</b>), Versuchszähler mitzählen
+        (<code>versuche++</code>) und if/else für den Hinweis (<b>Lektion 04</b>).</div>
+      <button class="solution-btn" onclick="toggleSolution(this)">💡 Lösung anzeigen</button>
+      <div class="solution"><div class="code-window">
+        <div class="code-title"><span class="dots"><i></i><i></i><i></i></span> zahlenraten.js – Kernidee</div>
+<pre><span class="kw">let</span> <span class="var">zufall</span> = <span class="fn">Math.floor</span>(<span class="fn">Math.random</span>()*<span class="num">100</span>)+<span class="num">1</span>
+<span class="kw">let</span> <span class="var">versuche</span> = <span class="num">0</span>
+<span class="kw">let</span> <span class="var">tipp</span> = <span class="num">0</span>
+
+<span class="kw">while</span> (<span class="var">tipp</span> != <span class="var">zufall</span>) {
+    <span class="var">tipp</span> = <span class="fn">Number</span>(<span class="fn">prompt</span>(<span class="str">"Dein Tipp: "</span>))
+    <span class="var">versuche</span>++
+
+    <span class="kw">if</span> (<span class="var">tipp</span> == <span class="var">zufall</span>) {
+        <span class="fn">console.log</span>(<span class="str">"Richtig! Du hast "</span>+<span class="var">versuche</span>+<span class="str">" Versuch(e) gebraucht"</span>)
+    }
+    <span class="kw">else if</span> (<span class="var">tipp</span> &lt; <span class="var">zufall</span>) {
+        <span class="fn">console.log</span>(<span class="str">"Höher!"</span>)
+    }
+    <span class="kw">else</span> {
+        <span class="fn">console.log</span>(<span class="str">"Niedriger!"</span>)
+    }
+}</pre>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <h2 class="section-title">🧠 Quiz: Bist du bereit?</h2>
+  <p class="section-sub">14 Fragen zu den Lektionen 01–10. Überlege gut – du kannst jede Frage nur einmal beantworten!</p>
+
+  <div class="quiz-card" id="quiz">
+    <div class="quiz-progress"><div class="bar" id="quizBar"></div></div>
+    <div class="quiz-meta">
+      <span id="quizCount">Frage 1 von 14</span>
+      <span>Punkte: <b id="quizScore">0</b></span>
+    </div>
+
+    <div id="quizPlay">
+      <div class="quiz-question" id="quizQuestion"></div>
+      <div class="quiz-code" id="quizCode"></div>
+      <div id="quizAnswers"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="quiz-next" id="quizNext" onclick="nextQuestion()">Weiter →</button>
+    </div>
+
+    <div class="quiz-result" id="quizResult">
+      <div class="emoji" id="resultEmoji">🎉</div>
+      <h3 id="resultTitle">Quiz geschafft!</h3>
+      <div class="score" id="resultScore">0 / 14</div>
+      <p id="resultText"></p>
+      <button class="quiz-restart" onclick="restartQuiz()">🔄 Nochmal versuchen</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Erstellt für den Informatik-Unterricht • Geschrieben in VS Code, gestartet mit <strong>Code Runner</strong> 😉<br>
+  Tipp: Neue Datei in VS Code (<code>Strg+N</code>) → speichern als <code>.js</code> → ▶-Button (Run Code)
+</footer>
+
+<script>
+/* ---------- Themen-Aufklapper & Lösungen ---------- */
+function toggleTopic(btn) {
+  btn.parentElement.classList.toggle('open');
+}
+
+function toggleSolution(btn) {
+  const sol = btn.nextElementSibling;
+  const open = sol.classList.toggle('open');
+  btn.textContent = open ? '🙈 Lösung ausblenden' : '💡 Lösung anzeigen';
+}
+
+/* ---------- Quiz ---------- */
+const questions = [
+  {
+    q: "Womit gibst du in JavaScript Text im Terminal aus?",
+    answers: ["echo", "console.log()", "print()", "System.out.println()"],
+    correct: 1,
+    explain: "console.log(\"Text\") schreibt den Text in das Terminal – deine wichtigste Ausgabe-Funktion."
+  },
+  {
+    q: "Wie erstellst du eine Variable in JavaScript?",
+    answers: ["let name = \"Fritz\"", "$name = \"Fritz\"", "name := \"Fritz\"", "var name := \"Fritz\""],
+    correct: 0,
+    explain: "let erstellt die Variable beim ersten Mal – in JavaScript gibt es kein $-Zeichen für Variablennamen."
+  },
+  {
+    q: "Was gibt dieser Code aus?",
+    code: "let name = \"Kim\"\nconsole.log(\"Hi \"+name)",
+    answers: ["Hi Kim", "Hi name", "Hi + Kim", "Eine Fehlermeldung"],
+    correct: 0,
+    explain: "Mit + hängst du Text und Variable zusammen: \"Hi Kim\"."
+  },
+  {
+    q: "Warum braucht man bei Zahleneingaben Number()?",
+    answers: ["Damit die Zahl schöner aussieht", "Damit das Programm schneller läuft", "Weil prompt immer einen String liefert", "Number() ist optional und unnötig"],
+    correct: 2,
+    explain: "prompt liefert IMMER einen String, z.B. \"17\". Erst Number() macht die echte Zahl 17 daraus, mit der man rechnen kann – das nennt man Typecast."
+  },
+  {
+    q: "Was gibt console.log(x) aus?",
+    code: "let x = 5\nx++\nx = x + 3\nconsole.log(x)",
+    answers: ["5", "6", "8", "9"],
+    correct: 3,
+    explain: "x++ macht aus 5 eine 6, dann x+3 ergibt 9. x++ ist die Kurzform von x = x + 1."
+  },
+  {
+    q: "Was gibt 04_abfrage.js aus, wenn man 17 eingibt?",
+    code: "if (alter < 16) {\n    console.log(\"Kommsch da nit rein.\")\n}\nelse if (alter <= 18) {\n    console.log(\"Aber keine harten Drinks.\")\n}\nelse if (alter == 20) {\n    console.log(\"Happy 20\")\n}\nelse {\n    console.log(\"Viel Spaß!\")\n}",
+    answers: ["Aber keine harten Drinks.", "Kommsch da nit rein.", "Happy 20", "Viel Spaß!"],
+    correct: 0,
+    explain: "17 < 16 ist falsch, 17 <= 18 ist wahr → diese Ausgabe gewinnt! Die erste wahre Bedingung gewinnt, der Rest wird übersprungen."
+  },
+  {
+    q: "Was bedeutet && in einer Bedingung?",
+    answers: ["UND – beide Bedingungen müssen wahr sein", "ODER – mindestens eine Bedingung muss wahr sein", "NICHT – kehrt das Ergebnis um", "Addition zweier Zahlen"],
+    correct: 0,
+    explain: "&& (UND) verlangt, dass BEIDE Bedingungen wahr sind – wie in 05_abfrage2.js: pw == \"admin\" UND username == \"user\" müssen beide stimmen."
+  },
+  {
+    q: "Was gibt dieser Code aus?",
+    code: "let zahl = 15.7\nconsole.log(Math.floor(zahl))",
+    answers: ["16", "15", "15.7", "15.5"],
+    correct: 1,
+    explain: "Math.floor() rundet immer ab → 15. Math.ceil() würde aufrunden (16), Math.round() kaufmännisch (16)."
+  },
+  {
+    q: "Was macht toFixed(2) mit der Zahl 17.7834?",
+    answers: ["Rechnet sie mal 2", "Rundet auf eine ganze Zahl: 18", "Verdoppelt die Zahl", "Formatiert sie auf 2 Nachkommastellen: 17.78"],
+    correct: 3,
+    explain: "toFixed(2) liefert genau 2 Nachkommastellen – perfekt für Preise. Aus 17.780000000000001 wird so 17.78."
+  },
+  {
+    q: "Was liefert Math.floor(Math.random()*10)+1?",
+    answers: ["Eine Zufallszahl zwischen 0 und 1", "Eine Kommazahl zwischen 1 und 10", "Immer 10", "Eine ganze Zufallszahl zwischen 1 und 10"],
+    correct: 3,
+    explain: "Das Muster aus Lektion 07: *10 → 0 bis 9.99, Math.floor() → 0 bis 9, +1 → 1 bis 10."
+  },
+  {
+    q: "Wie oft läuft diese Schleife?",
+    code: "for (i=1; i<=10; i++) {\n    console.log(\"FOR Schleife \"+i)\n}",
+    answers: ["9-mal", "10-mal", "11-mal", "Unendlich oft"],
+    correct: 1,
+    explain: "Sie startet bei 1 und läuft, solange i <= 10 ist – also genau 10 Durchläufe."
+  },
+  {
+    q: "Was passiert, wenn du in einer while-Schleife vergisst, die Zählvariable zu erhöhen (i++)?",
+    answers: ["Die Schleife läuft genau einmal", "JavaScript überspringt die Schleife", "Es entsteht eine Endlosschleife", "Die Schleife läuft zweimal"],
+    correct: 2,
+    explain: "Die Bedingung bleibt für immer wahr → Endlosschleife. Im Terminal kannst du mit Strg + C abbrechen."
+  },
+  {
+    q: "Wann endet diese Schleife?",
+    code: "let nochmal = \"ja\"\nwhile (nochmal == \"ja\") {\n    console.log(\"Ich bin ein Pseudo-Programm...\")\n    nochmal = prompt(\"Willst du nochmal starten? (ja/nein): \")\n}",
+    answers: ["Nach 10 Durchläufen", "Sobald der Benutzer etwas anderes als \"ja\" eingibt", "Nie – sie läuft endlos", "Nach dem ersten Durchlauf"],
+    correct: 1,
+    explain: "Das „Nochmal?“-Muster aus Lektion 10: Die Schleife läuft, solange nochmal == \"ja\" ist – die Eingabe von \"nein\" beendet sie."
+  },
+  {
+    q: "Was musst du tun, bevor du prompt() in einer neuen Node.js-Datei verwenden kannst?",
+    answers: ["Nichts, prompt gehört zu JavaScript", "Node.js neu installieren", "npm install prompt-sync im Projektordner", "VS Code neu starten"],
+    correct: 2,
+    explain: "prompt-sync ist eine externe Bibliothek: einmal pro Projekt mit npm install prompt-sync installieren – dann klappt const prompt = require(\"prompt-sync\")()."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+const quizQuestion = document.getElementById('quizQuestion');
+const quizCode = document.getElementById('quizCode');
+const quizAnswers = document.getElementById('quizAnswers');
+const quizFeedback = document.getElementById('quizFeedback');
+const quizNext = document.getElementById('quizNext');
+const quizBar = document.getElementById('quizBar');
+
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function showQuestion() {
+  answered = false;
+  const item = questions[current];
+  quizQuestion.textContent = 'Frage ' + (current + 1) + ': ' + item.q;
+  quizCode.innerHTML = item.code
+    ? '<div class="code-window"><pre>' + esc(item.code).replace(/\n/g, '<br>') + '</pre></div>'
+    : '';
+  quizAnswers.innerHTML = '';
+  quizFeedback.className = 'quiz-feedback';
+  quizFeedback.textContent = '';
+  quizNext.style.display = 'none';
+
+  item.answers.forEach(function(ans, i) {
+    const btn = document.createElement('button');
+    btn.className = 'answer';
+    btn.textContent = ans;
+    btn.onclick = function() { checkAnswer(i, btn); };
+    quizAnswers.appendChild(btn);
+  });
+
+  document.getElementById('quizCount').textContent = 'Frage ' + (current + 1) + ' von ' + questions.length;
+  quizBar.style.width = (current / questions.length * 100) + '%';
+}
+
+function checkAnswer(i, btn) {
+  if (answered) return;
+  answered = true;
+  const item = questions[current];
+  const buttons = quizAnswers.querySelectorAll('.answer');
+  buttons.forEach(function(b) { b.disabled = true; });
+  buttons[item.correct].classList.add('correct');
+
+  if (i === item.correct) {
+    score++;
+    document.getElementById('quizScore').textContent = score;
+    quizFeedback.className = 'quiz-feedback ok';
+    quizFeedback.textContent = '✅ Richtig! ' + item.explain;
+  } else {
+    btn.classList.add('wrong');
+    quizFeedback.className = 'quiz-feedback nope';
+    quizFeedback.textContent = '❌ Nicht ganz. ' + item.explain;
+  }
+  quizNext.textContent = current === questions.length - 1 ? 'Ergebnis anzeigen 🏁' : 'Weiter →';
+  quizNext.style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizPlay').style.display = 'none';
+  const result = document.getElementById('quizResult');
+  result.style.display = 'block';
+  document.getElementById('resultScore').textContent = score + ' / ' + questions.length;
+  const ratio = score / questions.length;
+  let emoji, title, text;
+  if (ratio === 1) { emoji = '🏆'; title = 'Perfekt!'; text = 'Du kennst die Lektionen 01–10 in und auswendig. Bereit für das nächste Projekt!'; }
+  else if (ratio >= 0.7) { emoji = '🎉'; title = 'Super gemacht!'; text = 'Du hast die Grundlagen drauf. Schau dir noch einmal die Themen an, bei denen du unsicher warst.'; }
+  else if (ratio >= 0.4) { emoji = '💪'; title = 'Guter Anfang!'; text = 'Wiederhole die Themen und versuche es noch einmal – Übung macht den Meister.'; }
+  else { emoji = '📚'; title = 'Nochmal üben!'; text = 'Klappe die Themen oben noch einmal auf und arbeite die Code-Beispiele selbst nach. Dann klappt es beim nächsten Mal!'; }
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultText').textContent = text;
+}
+
+function restartQuiz() {
+  current = 0;
+  score = 0;
+  document.getElementById('quizScore').textContent = '0';
+  document.getElementById('quizPlay').style.display = 'block';
+  document.getElementById('quizResult').style.display = 'none';
+  showQuestion();
+}
+
+showQuestion();
+</script>
+</body>
+</html>
