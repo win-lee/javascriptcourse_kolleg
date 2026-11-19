@@ -190,6 +190,17 @@
     color: var(--accent-bright); font-size: 1rem; cursor: pointer; font-family: inherit;
   }
   .quiz-restart:hover { background: rgba(247,223,30,.12); }
+  .new-badge { display: inline-block; background: linear-gradient(135deg, #e8613c, #f7b32b); color: #fff;
+    font-size: .68rem; font-weight: 800; letter-spacing: .5px; border-radius: 20px; padding: 3px 10px;
+    margin-right: 10px; vertical-align: middle; box-shadow: 0 2px 8px rgba(247,179,43,.35); }
+  #quizStart { text-align: center; padding: 26px 10px 14px; }
+  #quizStart p { color: var(--text-dim); margin-bottom: 18px; }
+  .quiz-start-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .quiz-start-btns .quiz-next { display: inline-block; }
+  .quiz-start-btns .quiz-next:disabled { opacity: .45; cursor: not-allowed; }
+  #progressLine { color: var(--text-dim); font-size: .95rem; margin: 14px 0 4px; }
+  .quiz-reset { background: none; border: none; color: var(--text-dim); font-size: .8rem;
+    text-decoration: underline; cursor: pointer; padding: 6px; }
 
   footer {
     margin-top: 70px; padding: 26px 0; text-align: center;
@@ -763,7 +774,7 @@ Willst du nochmal starten? (ja/nein): nein</span></pre>
      Die Dateien baust du in VS Code auf und startest sie mit <strong>Code Runner</strong>.</p>
 
   <!-- UE-00: rechner1 -->
-  <section class="topic">
+  <section class="topic" id="ue_rechner1">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE0</span>
       rechner1.js: Zwei Zahlen addieren
@@ -792,7 +803,7 @@ Zahl 2 eingeben: 8
   </section>
 
   <!-- UE-00: inch_umrechner1 -->
-  <section class="topic">
+  <section class="topic" id="ue_inch">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE0</span>
       inch_umrechner1.js: Inch in cm
@@ -819,7 +830,7 @@ Zahl 2 eingeben: 8
   </section>
 
   <!-- UE-01: rechner2 -->
-  <section class="topic">
+  <section class="topic" id="ue_rechner2">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE1</span>
       rechner2.js: Rechenart wählen
@@ -857,7 +868,7 @@ Welche Rechenart? (+, -, *, /): *
   </section>
 
   <!-- UE-01: rechner3 -->
-  <section class="topic">
+  <section class="topic" id="ue_rechner3">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE1</span>
       rechner3.js: Division durch 0 abfangen
@@ -892,7 +903,7 @@ Welche Rechenart? (+, -, *, /): /
   </section>
 
   <!-- UE-01: kopfrechnen_1 -->
-  <section class="topic">
+  <section class="topic" id="ue_kopfrechnen1">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE1</span>
       kopfrechnen_1.js: Aufgabe stellen &amp; prüfen
@@ -932,7 +943,7 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
   </section>
 
   <!-- UE-02: steuern_1 + steuern_2 -->
-  <section class="topic">
+  <section class="topic" id="ue_steuern12">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE2</span>
       steuern_1 &amp; steuern_2: Einkommensteuer
@@ -968,7 +979,7 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
   </section>
 
   <!-- UE-02: steuern_3 -->
-  <section class="topic">
+  <section class="topic" id="ue_steuern3">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE2</span>
       steuern_3.js: Steuer-Tabelle (Mehrfachverzweigung)
@@ -1008,7 +1019,7 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
   </section>
 
   <!-- UE-02: steuern_4 -->
-  <section class="topic">
+  <section class="topic" id="ue_steuern4">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE2</span>
       steuern_4.js: Gehalt + Familienstand (Logik)
@@ -1040,7 +1051,7 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
   </section>
 
   <!-- UE-03: quadratzahlen -->
-  <section class="topic">
+  <section class="topic" id="ue_quadratzahlen">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE3</span>
       quadratzahlen_1 &amp; _2.js: Quadratzahlen mit Abbruch
@@ -1071,7 +1082,7 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
   </section>
 
   <!-- UE-03: zahlenfolge_1 -->
-  <section class="topic">
+  <section class="topic" id="ue_zahlenfolge">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE3</span>
       zahlenfolge_1.js: -10 bis 10 einordnen
@@ -1096,7 +1107,7 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
   </section>
 
   <!-- UE-03: kopfrechnen_2a/2b -->
-  <section class="topic">
+  <section class="topic" id="ue_kopfrechnen2">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE3</span>
       kopfrechnen_2a &amp; _2b.js: Aufgaben wiederholen
@@ -1133,7 +1144,7 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
   </section>
 
   <!-- UE-03: zahlenraten -->
-  <section class="topic">
+  <section class="topic" id="ue_zahlenraten">
     <button class="topic-btn" onclick="toggleTopic(this)">
       <span class="topic-num">UE3</span>
       zahlenraten.js: Das große Spiel
@@ -1183,7 +1194,18 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
       <span>Punkte: <b id="quizScore">0</b></span>
     </div>
 
-    <div id="quizPlay">
+    <div id="quizStart">
+      <p>Wie möchtest du starten? Dein Fortschritt wird auf diesem Gerät gespeichert – du kannst jederzeit weitermachen.</p>
+      <div class="quiz-start-btns">
+        <button class="quiz-next" id="btnAll" onclick="startQuiz('all')">📋 Alle Fragen</button>
+        <button class="quiz-next" id="btnNew" onclick="startQuiz('new')">🆕 Nur die neuen Fragen</button>
+        <button class="quiz-next" id="btnOpen" onclick="startQuiz('open')">🔄 Offene Fragen üben</button>
+      </div>
+      <p id="progressLine"></p>
+      <button class="quiz-reset" onclick="resetFortschritt()">🗑 Fortschritt auf diesem Gerät zurücksetzen</button>
+    </div>
+
+    <div id="quizPlay" style="display:none">
       <div class="quiz-question" id="quizQuestion"></div>
       <div class="quiz-code" id="quizCode"></div>
       <div id="quizAnswers"></div>
@@ -1210,7 +1232,22 @@ Korrektes Ergebnis: 8                Korrektes Ergebnis: 22</span></pre>
 <script>
 /* ---------- Themen-Aufklapper & Lösungen ---------- */
 function toggleTopic(btn) {
-  btn.parentElement.classList.toggle('open');
+  const sec = btn.parentElement;
+  const jetztOffen = sec.classList.toggle('open');
+  if (jetztOffen) themaGesehen(sec);
+}
+
+/* Wenn ein als NEU markiertes Kapitel aufgemacht wird,
+   merken wir uns das pro Gerät – das Badge verschwindet dann persönlich. */
+function themaGesehen(sec) {
+  if (!sec.id || NEUE_THEMEN.indexOf(sec.id) === -1) return;
+  const f = ladeFortschritt();
+  if (f.gesehen.indexOf(sec.id) === -1) {
+    f.gesehen.push(sec.id);
+    speichereFortschritt(f);
+  }
+  const badge = sec.querySelector('.new-badge');
+  if (badge) badge.remove();
 }
 
 function toggleSolution(btn) {
@@ -1313,6 +1350,20 @@ const questions = [
   }
 ];
 
+/* ================================================================
+   🔧 PFLEGE-LISTE: Neue Inhalte markieren
+   Wenn neue Kapitel/Übungen dazukommen, hier einfach die id des
+   <section>-Elements eintragen (z. B. 'thema11', 'ue_zahlenraten2').
+   Die Seite setzt dann automatisch ein NEU-Badge an den Kapitel-
+   Button. Das Badge verschwindet pro Schüler:in, sobald das
+   Kapitel einmal aufgemacht wurde (localStorage, siehe toggleTopic).
+   Neue Quiz-Fragen markierst du mit  neu: true  – sie erscheinen
+   dann im Modus "Nur die neuen Fragen".
+   Aktuell neu: (nichts – Liste ist leer, System ist aber aktiv)
+   ================================================================ */
+const NEUE_THEMEN = [];
+
+let quizPool = questions;
 let current = 0;
 let score = 0;
 let answered = false;
@@ -1330,7 +1381,7 @@ function esc(s) {
 
 function showQuestion() {
   answered = false;
-  const item = questions[current];
+  const item = quizPool[current];
   quizQuestion.textContent = 'Frage ' + (current + 1) + ': ' + item.q;
   quizCode.innerHTML = item.code
     ? '<div class="code-window"><pre>' + esc(item.code).replace(/\n/g, '<br>') + '</pre></div>'
@@ -1348,15 +1399,18 @@ function showQuestion() {
     quizAnswers.appendChild(btn);
   });
 
-  document.getElementById('quizCount').textContent = 'Frage ' + (current + 1) + ' von ' + questions.length;
-  quizBar.style.width = (current / questions.length * 100) + '%';
+  document.getElementById('quizCount').textContent = 'Frage ' + (current + 1) + ' von ' + quizPool.length;
+  quizBar.style.width = (current / quizPool.length * 100) + '%';
 }
 
 function checkAnswer(i, btn) {
   if (answered) return;
   answered = true;
-  const item = questions[current];
+  const item = quizPool[current];
   const buttons = quizAnswers.querySelectorAll('.answer');
+  const f = ladeFortschritt();
+  f.answers[item._i] = (i === item.correct) ? 'ok' : 'nope';
+  speichereFortschritt(f);
   buttons.forEach(function(b) { b.disabled = true; });
   buttons[item.correct].classList.add('correct');
 
@@ -1370,13 +1424,13 @@ function checkAnswer(i, btn) {
     quizFeedback.className = 'quiz-feedback nope';
     quizFeedback.textContent = '❌ Nicht ganz. ' + item.explain;
   }
-  quizNext.textContent = current === questions.length - 1 ? 'Ergebnis anzeigen 🏁' : 'Weiter →';
+  quizNext.textContent = current === quizPool.length - 1 ? 'Ergebnis anzeigen 🏁' : 'Weiter →';
   quizNext.style.display = 'inline-block';
 }
 
 function nextQuestion() {
   current++;
-  if (current < questions.length) {
+  if (current < quizPool.length) {
     showQuestion();
   } else {
     showResult();
@@ -1387,13 +1441,16 @@ function showResult() {
   document.getElementById('quizPlay').style.display = 'none';
   const result = document.getElementById('quizResult');
   result.style.display = 'block';
-  document.getElementById('resultScore').textContent = score + ' / ' + questions.length;
-  const ratio = score / questions.length;
+  document.getElementById('resultScore').textContent = score + ' / ' + quizPool.length;
+  const ratio = score / quizPool.length;
   let emoji, title, text;
   if (ratio === 1) { emoji = '🏆'; title = 'Perfekt!'; text = 'Du kennst die Lektionen 01–10 in und auswendig. Bereit für das nächste Projekt!'; }
   else if (ratio >= 0.7) { emoji = '🎉'; title = 'Super gemacht!'; text = 'Du hast die Grundlagen drauf. Schau dir noch einmal die Themen an, bei denen du unsicher warst.'; }
   else if (ratio >= 0.4) { emoji = '💪'; title = 'Guter Anfang!'; text = 'Wiederhole die Themen und versuche es noch einmal – Übung macht den Meister.'; }
   else { emoji = '📚'; title = 'Nochmal üben!'; text = 'Klappe die Themen oben noch einmal auf und arbeite die Code-Beispiele selbst nach. Dann klappt es beim nächsten Mal!'; }
+  const f = ladeFortschritt();
+  const geloest = Object.keys(f.answers).filter(function(k) { return f.answers[k] === 'ok'; }).length;
+  text += ' Insgesamt hast du inzwischen ' + geloest + ' von ' + questions.length + ' Fragen richtig gelöst.';
   document.getElementById('resultEmoji').textContent = emoji;
   document.getElementById('resultTitle').textContent = title;
   document.getElementById('resultText').textContent = text;
@@ -1403,12 +1460,101 @@ function restartQuiz() {
   current = 0;
   score = 0;
   document.getElementById('quizScore').textContent = '0';
-  document.getElementById('quizPlay').style.display = 'block';
+  document.getElementById('quizPlay').style.display = 'none';
   document.getElementById('quizResult').style.display = 'none';
+  updateStartScreen();
+  document.getElementById('quizStart').style.display = 'block';
+}
+
+/* ---------- Fortschritt pro Gerät (localStorage) ----------
+   answers = { 0: 'ok', 3: 'nope', ... }  (Index der Frage im questions-Array)
+   gesehen = ['thema11', ...]             (Kapitel, deren NEU-Badge schon entfernt wurde)
+   Wichtig: Fragen nur AM ENDE anfügen, sonst verschieben sich die Indizes. */
+const F_KEY = 'js_kolleg_fortschritt';
+
+function ladeFortschritt() {
+  try {
+    const f = JSON.parse(localStorage.getItem(F_KEY));
+    if (f && typeof f === 'object') {
+      return { answers: f.answers || {}, gesehen: Array.isArray(f.gesehen) ? f.gesehen : [] };
+    }
+  } catch (e) {}
+  return { answers: {}, gesehen: [] };
+}
+
+function speichereFortschritt(f) {
+  try { localStorage.setItem(F_KEY, JSON.stringify(f)); } catch (e) {}
+}
+
+function quizMitIndex() {
+  return questions.map(function(q, i) { return Object.assign({}, q, { _i: i }); });
+}
+
+function startQuiz(mode) {
+  const alle = quizMitIndex();
+  if (mode === 'new')      quizPool = alle.filter(function(q) { return q.neu; });
+  else if (mode === 'open') quizPool = alle.filter(function(q) { return ladeFortschritt().answers[q._i] !== 'ok'; });
+  else                      quizPool = alle;
+  if (quizPool.length === 0) { updateStartScreen(); return; }
+  current = 0;
+  score = 0;
+  document.getElementById('quizScore').textContent = '0';
+  document.getElementById('quizStart').style.display = 'none';
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizPlay').style.display = 'block';
   showQuestion();
 }
 
-showQuestion();
+function resetFortschritt() {
+  speichereFortschritt({ answers: {}, gesehen: [] });
+  /* NEU-Badges wiederherstellen */
+  NEUE_THEMEN.forEach(function(id) {
+    const sec = document.getElementById(id);
+    if (!sec || sec.querySelector('.new-badge')) return;
+    const btn = sec.querySelector('.topic-btn');
+    if (!btn) return;
+    const b = document.createElement('span');
+    b.className = 'new-badge';
+    b.textContent = 'NEU';
+    btn.insertBefore(b, btn.firstChild);
+  });
+  updateStartScreen();
+}
+
+function updateStartScreen() {
+  const f = ladeFortschritt();
+  const geloest = Object.keys(f.answers).filter(function(k) { return f.answers[k] === 'ok'; }).length;
+  const nNeu = questions.filter(function(q) { return q.neu; }).length;
+  const offen = questions.length - geloest;
+  document.getElementById('btnAll').textContent = '📋 Alle Fragen (' + questions.length + ')';
+  document.getElementById('btnNew').textContent = '🆕 Nur die neuen Fragen (' + nNeu + ')';
+  document.getElementById('btnOpen').textContent = '🔄 Offene Fragen üben (' + offen + ')';
+  document.getElementById('btnNew').disabled = (nNeu === 0);
+  document.getElementById('btnOpen').disabled = (offen === 0);
+  document.getElementById('btnOpen').title = (offen === 0) ? 'Du hast bisher alle Fragen richtig gelöst!' : '';
+  document.getElementById('progressLine').textContent =
+    geloest > 0
+    ? '✅ Dein Fortschritt: ' + geloest + ' von ' + questions.length + ' Fragen richtig gelöst' + (offen > 0 ? ' – weiter geht’s!' : ' – komplett!')
+    : 'Noch kein gespeicherter Fortschritt auf diesem Gerät. Leg los!';
+}
+
+/* ---------- NEU-Badges automatisch an die Kapitel-Buttons ----------
+   Das Badge verschwindet, sobald der/die Schüler:in das Kapitel einmal
+   aufgemacht hat (pro Gerät gespeichert). */
+NEUE_THEMEN.forEach(function(id) {
+  const sec = document.getElementById(id);
+  if (!sec) return;
+  if (ladeFortschritt().gesehen.indexOf(id) !== -1) return;   // schon gesehen
+  const btn = sec.querySelector('.topic-btn');
+  if (btn && !btn.querySelector('.new-badge')) {
+    const b = document.createElement('span');
+    b.className = 'new-badge';
+    b.textContent = 'NEU';
+    btn.insertBefore(b, btn.firstChild);
+  }
+});
+
+updateStartScreen();
 </script>
 </body>
 </html>
